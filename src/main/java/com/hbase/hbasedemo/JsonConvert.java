@@ -35,20 +35,19 @@ public class JsonConvert {
             JsonReader reader = new JsonReader(isreader);
             reader.beginObject();
 
-            if (prefixName == names[0]) {
+            if (prefixName.equals(names[0])) {
                 lg = readLastLogon(reader);
+
                 try {
-                    BeanUtils.copyProperties((Object)llg, (Object)lg);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
+                    BeanUtils.copyProperties(llg, lg);
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
                 Gson gson = new Gson();
                 System.out.println(gson.toJson(llg));
-            } else if (prefixName == names[1]) {
+            } else if (prefixName.equals(names[1])) {
                 readSummary(reader);
-            } else if (prefixName == names[2]) {
+            } else if (prefixName.equals(names[2])) {
                 readSampleLog(reader);
             }
 
