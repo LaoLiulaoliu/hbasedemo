@@ -1,0 +1,1 @@
+{"miTime":"2017-09-15 09:32:31","event":"3001","data":"{\"userName\":\"Tiger\",\"idType\":\"I\",\"idNum\":\"1234578990\",\"cardType\":\"D\",\"cardNum\":\"1234\",\"mobileNum\":\"8612345678901\",\"reasonCode\":\"008\"}","msgType":"preBind","channel":"MOBILE","openId":"HSBC501048425"}

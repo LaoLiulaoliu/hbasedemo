@@ -1,0 +1,21 @@
+{
+  "msgType": "logon",
+  "data": {
+    "addressDtl": {
+      "ctryCde": "CN",
+      "23456": "Mr**Su（public信件）",
+      "line2": "Room *",
+      "line1": "中国上海市**路*弄４号"
+    },
+    "camlevel": "30",
+    "custType": "PFS",
+    "custSeg": "premier",
+    "guid": "f169b876f04287b3ebef550eb6f666",
+    "dateOfBirth": "1995-09-17 00:00:00",
+    "jobTitlFull": null
+  },
+  "miTime": "1510902127673",
+  "channel": "BMW",
+  "custId": "HSBC053003422",
+  "event": "lastLogonCusDetl"
+}

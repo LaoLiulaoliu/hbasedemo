@@ -2,8 +2,11 @@ package com.hbase.hbasedemo;
 
 import com.hbase.hbasedemo.HbaseHelper;
 import com.hbase.hbasedemo.RegionSplit;
+import com.hbase.hbasedemo.structure.lastLogon;
+import com.hbase.hbasedemo.JsonConvert;
 
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +19,14 @@ public class HbaseDemo {
     public final static Logger logger = LoggerFactory.getLogger(HbaseDemo.class);
 
     public static void main(String[] args) throws IOException {
-        Configuration conf = HBaseConfiguration.create();
-        HbaseHelper helper = HbaseHelper.getHelper(conf);
-        createTable(helper);
-        helper.getRegionSize("FANPOINTINFO");
+        JsonConvert jc = new JsonConvert();
+        jc.readJson("lastLogon.json");
+
+
+//        Configuration conf = HBaseConfiguration.create();
+//        HbaseHelper helper = HbaseHelper.getHelper(conf);
+//        createTable(helper);
+//        helper.getRegionSize("FANPOINTINFO");
     }
 
     public static void createTable(HbaseHelper helper) throws IOException {
@@ -28,5 +35,4 @@ public class HbaseDemo {
 
         helper.createTable("FAN12", splitKeys,"INFO");
     }
-
 }

@@ -1,0 +1,32 @@
+{
+  "msgType": "acctSummary",
+  "data": {
+    "prdCatWrapperList": [
+      {
+        "acctLiteWrapper": [
+          {
+            "entProdTypCde": "CA1",
+            "entProdCatCde": "DDA",
+            "ccy": "CNY"
+          },
+          {
+            "entProdTypCde": "MS1",
+            "entProdCatCde": "DDA",
+            "ccy": "USD"
+          },
+          {
+            "entProdTypCde": "MSV",
+            "entProdCatCde": "DDA",
+            "ccy": "USD"
+          }
+        ],
+        "prdCatCde": "SAVS",
+        "ccy": "CNY"
+      }
+    ]
+  },
+  "miTime": "1510904415870",
+  "channel": "MOBILE",
+  "custId": "HSBC301036166",
+  "event": "acctSummary"
+}
