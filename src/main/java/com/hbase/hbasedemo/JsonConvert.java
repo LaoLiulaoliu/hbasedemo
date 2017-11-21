@@ -1,5 +1,6 @@
 package com.hbase.hbasedemo;
 
+import com.google.gson.Gson;
 import com.hbase.hbasedemo.structure.*;
 import com.google.gson.stream.JsonReader;
 import org.apache.commons.beanutils.BeanUtils;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 
 
 public class JsonConvert {
@@ -25,7 +27,8 @@ public class JsonConvert {
         Reader isreader = null;
         lastLogon lg = null;
         LastLogonFlat llg = null;
-        String prefixName = fileName.split(".")[0];
+        System.out.println();
+        String prefixName = fileName.split("\\.")[0];
 
         try {
             isreader = new InputStreamReader(new FileInputStream(file), "UTF-8");
@@ -34,6 +37,15 @@ public class JsonConvert {
 
             if (prefixName == names[0]) {
                 lg = readLastLogon(reader);
+                try {
+                    BeanUtils.copyProperties((Object)llg, (Object)lg);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                Gson gson = new Gson();
+                System.out.println(gson.toJson(llg));
             } else if (prefixName == names[1]) {
                 readSummary(reader);
             } else if (prefixName == names[2]) {
@@ -44,16 +56,14 @@ public class JsonConvert {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        BeanUtils.copyProperties(lg, llg);
     }
 
     private lastLogon readLastLogon(JsonReader reader) {
         lastLogon lg = new lastLogon();
         try {
+            reader.beginObject();
             while (reader.hasNext()) {
-                String s = reader.nextName();
-                switch (s) {
+                switch (reader.nextName()) {
                     case "msgType":
                         lg.msgType = reader.nextString();
                         break;
@@ -72,9 +82,12 @@ public class JsonConvert {
                     case "data":
                         lg.data = readLogonData(reader);
                         break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
-
             }
+            reader.endObject();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,8 +99,7 @@ public class JsonConvert {
         try {
             reader.beginObject();
             while (reader.hasNext()) {
-                String s = reader.nextName();
-                switch (s) {
+                switch (reader.nextName()) {
                     case "camlevel":
                         lgData.camlevel = reader.nextString();
                         break;
@@ -109,6 +121,9 @@ public class JsonConvert {
                     case "addressDtl":
                         lgData.addressDtl = readAddress(reader);
                         break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
 
             }
@@ -124,8 +139,7 @@ public class JsonConvert {
         try {
             reader.beginObject();
             while (reader.hasNext()) {
-                String s = reader.nextName();
-                switch (s) {
+                switch (reader.nextName()) {
                     case "ctryCde":
                         ad.ctryCde = reader.nextString();
                         break;
@@ -138,6 +152,9 @@ public class JsonConvert {
                     case "line1":
                         ad.line1 = reader.nextString();
                         break;
+                    default:
+                        reader.skipValue();
+                        break;
                 }
             }
             reader.endObject();
@@ -149,10 +166,12 @@ public class JsonConvert {
 
     private void readSummary(JsonReader reader) {
         try {
+            reader.beginObject();
             while (reader.hasNext()) {
                 String s = reader.nextName();
 
             }
+            reader.endObject();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,10 +179,12 @@ public class JsonConvert {
 
     private void readSampleLog(JsonReader reader) {
         try {
+            reader.beginObject();
             while (reader.hasNext()) {
                 String s = reader.nextName();
 
             }
+            reader.endObject();
         } catch (IOException e) {
             e.printStackTrace();
         }
