@@ -6,14 +6,13 @@ import com.hbase.hbasedemo.structure.acctSummary;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class HbaseDemo {
-    public final static Logger logger = LoggerFactory.getLogger(HbaseDemo.class);
+    //public final static Logger logger = LoggerFactory.getLogger(HbaseDemo.class);
 
     public static void main(String[] args) throws IOException {
         JsonConvert jc = new JsonConvert();
@@ -49,6 +48,7 @@ public class HbaseDemo {
         helper.put("bank", bankLogonRow, "logon", qualifierValues);
 
         String bankAccountRow = logonFlat.miTime + "-" + logonFlat.custId;
+        // TODO acct dataStructure
         Map<String, Object> mapQvs = MyBeanUtils.transBean2Map(acct);
         helper.put("bank", bankAccountRow, "account", mapQvs);
 
