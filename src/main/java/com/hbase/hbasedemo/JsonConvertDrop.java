@@ -26,7 +26,7 @@ public class JsonConvertDrop {
         File file = new File(path);
         Reader isreader = null;
         lastLogon lg = null;
-        LastLogonFlat llg = null;
+        LastLogonFlat llg = new LastLogonFlat();
         System.out.println();
         String prefixName = fileName.split("\\.")[0];
 

@@ -16,7 +16,7 @@ public class JsonConvert {
         ObjectMapper objectMapper = new ObjectMapper();
         String path = this.getClass().getClassLoader().getResource(fileName).getPath();
         lastLogon logon = null;
-        LastLogonFlat logonFlat = null;
+        LastLogonFlat logonFlat = new LastLogonFlat();
 
         try {
             logon = objectMapper.readValue(new File(path), lastLogon.class);
