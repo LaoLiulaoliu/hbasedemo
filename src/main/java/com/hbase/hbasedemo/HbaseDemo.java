@@ -1,8 +1,10 @@
 package com.hbase.hbasedemo;
 
+import com.hbase.hbasedemo.structure.LastLogonFlat;
+import com.hbase.hbasedemo.structure.acctSummary;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 
 public class HbaseDemo {
@@ -10,8 +12,8 @@ public class HbaseDemo {
 
     public static void main(String[] args) throws IOException {
         JsonConvert jc = new JsonConvert();
-        jc.readJson("lastLogon.json");
-
+        LastLogonFlat logonFlat = jc.readLogonJson("lastLogon.json");
+        acctSummary acct = jc.readSummaryJson("acctSummary.json");
 
 //        Configuration conf = HBaseConfiguration.create();
 //        HbaseHelper helper = HbaseHelper.getHelper(conf);
@@ -24,5 +26,6 @@ public class HbaseDemo {
         byte[][] splitKeys = rSplit.split();
 
         helper.createTable("FAN12", splitKeys,"INFO");
+        helper.getRegionSize("FAN12");
     }
 }

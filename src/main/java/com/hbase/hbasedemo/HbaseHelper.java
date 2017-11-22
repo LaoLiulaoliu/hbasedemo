@@ -280,6 +280,7 @@ public class HbaseHelper implements Closeable {
             Map<byte[], RegionLoad> rlMap = sl.getRegionsLoad();
             for (RegionLoad rl: rlMap.values()) {
                 String rName = rl.getNameAsString();
+                System.out.println(sn.getServerName() + " " + rName);
                 if(rName.substring(0, rName.indexOf(",")).equals(regionName)) {
                     int regionSize = rl.getStorefileSizeMB();
                     totalSize += regionSize;
