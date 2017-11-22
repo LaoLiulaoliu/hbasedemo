@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hbase.hbasedemo.structure.*;
 import org.apache.commons.beanutils.BeanUtils;
-import org.codehaus.jackson.map.DeserializationConfig;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;

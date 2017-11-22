@@ -1,8 +1,13 @@
 package com.hbase.hbasedemo.structure;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class WechatUser {
     public String msgType;
-    public String miTime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    public Date miTime;
     public String channel;
     public String openId;
     public String event;
@@ -23,11 +28,12 @@ public class WechatUser {
         this.msgType = msgType;
     }
 
-    public String getMiTime() {
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    public Date getMiTime() {
         return miTime;
     }
 
-    public void setMiTime(String miTime) {
+    public void setMiTime(Date miTime) {
         this.miTime = miTime;
     }
 
@@ -115,7 +121,7 @@ public class WechatUser {
     public String toString() {
         return "WechatUser{" +
                 "msgType='" + msgType + '\'' +
-                ", miTime='" + miTime + '\'' +
+                ", miTime=" + miTime +
                 ", channel='" + channel + '\'' +
                 ", openId='" + openId + '\'' +
                 ", event='" + event + '\'' +

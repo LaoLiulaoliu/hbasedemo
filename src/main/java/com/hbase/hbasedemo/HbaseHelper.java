@@ -201,6 +201,19 @@ public class HbaseHelper implements Closeable {
         tbl.close();
     }
 
+    public void put(String table, String row, String fam,
+                    Map<String, Object> qualifierValues) throws IOException {
+        Table tbl = connection.getTable(TableName.valueOf(table));
+        Put put = new Put(Bytes.toBytes(row));
+        for (Map.Entry<String, Object> entry : qualifierValues.entrySet()) {
+            put.addColumn(Bytes.toBytes(fam),
+                          Bytes.toBytes(entry.getKey()),
+                          Bytes.toBytes((String)entry.getValue()));
+        }
+        tbl.put(put);
+        tbl.close();
+    }
+
     /* Different columnFamilies can't have same qualifiers,
        this function only support one columnFamily actually.
      */
