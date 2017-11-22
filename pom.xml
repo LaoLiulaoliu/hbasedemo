@@ -11,6 +11,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.8</jdk.version>
     </properties>
 
@@ -92,9 +93,22 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/src/main/resources/*"
+                                      tofile="${project.build.directory}/${project.build.finalName}/" overwrite="true"/>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources/</directory>
+            </resource>
+        </resources>
     </build>
+
 </project>
