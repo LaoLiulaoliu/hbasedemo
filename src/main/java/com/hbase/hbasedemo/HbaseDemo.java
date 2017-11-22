@@ -26,6 +26,24 @@ public class HbaseDemo {
         createTable(helper);
         helper.getRegionSize("banklogon");
 
+        insertData(logonFlat, acct, samples, helper);
+
+        helper.regScan("bank", "151090\\d{7}-\\w+");
+    }
+
+    public static void createTable(HbaseHelper helper) throws IOException {
+        RegionSplit rSplit = new RegionSplit();
+        byte[][] splitKeys = rSplit.split();
+
+        helper.createTable("bank", splitKeys,"logon", "account");
+        helper.createTable("wechat", splitKeys,"user");
+        helper.getRegionSize("banklogon");
+    }
+
+    public static void insertData(LastLogonFlat logonFlat,
+                                  acctSummary acct,
+                                  List<WechatUser> samples,
+                                  HbaseHelper helper) throws IOException {
         String bankLogonRow = logonFlat.miTime + "-" + logonFlat.custId;
         Map<String, Object> qualifierValues = MyBeanUtils.transBean2Map(logonFlat);
         helper.put("bank", bankLogonRow, "logon", qualifierValues);
@@ -41,12 +59,4 @@ public class HbaseDemo {
         }
     }
 
-    public static void createTable(HbaseHelper helper) throws IOException {
-        RegionSplit rSplit = new RegionSplit();
-        byte[][] splitKeys = rSplit.split();
-
-        helper.createTable("bank", splitKeys,"logon", "account");
-        helper.createTable("wechat", splitKeys,"user");
-        helper.getRegionSize("banklogon");
-    }
 }

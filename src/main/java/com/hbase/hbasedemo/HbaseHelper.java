@@ -12,6 +12,7 @@ import java.util.NavigableMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.io.compress.Compression.Algorithm;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.NamespaceDescriptor;
@@ -31,6 +32,8 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.client.MetaScanner;
@@ -201,12 +204,12 @@ public class HbaseHelper implements Closeable {
         tbl.close();
     }
 
-    public void put(String table, String row, String fam,
+    public void put(String table, String row, String columnFamily,
                     Map<String, Object> qualifierValues) throws IOException {
         Table tbl = connection.getTable(TableName.valueOf(table));
         Put put = new Put(Bytes.toBytes(row));
         for (Map.Entry<String, Object> entry : qualifierValues.entrySet()) {
-            put.addColumn(Bytes.toBytes(fam),
+            put.addColumn(Bytes.toBytes(columnFamily),
                           Bytes.toBytes(entry.getKey()),
                           Bytes.toBytes((String)entry.getValue()));
         }
@@ -269,6 +272,32 @@ public class HbaseHelper implements Closeable {
         tbl.close();
     }
 
+    public void startStopScan(String table, String start, String stop)
+            throws IOException {
+        Table tbl = connection.getTable(TableName.valueOf(table));
+        Scan scan = new Scan();
+        scan.setStartRow(Bytes.toBytes(start));
+        scan.setStopRow(Bytes.toBytes(stop));
+        ResultScanner scanner = tbl.getScanner(scan);
+        for (Result result : scanner) {
+            System.out.println(result);
+        }
+        scanner.close();
+    }
+
+    public void regScan(String table, String reg)
+            throws IOException {
+        Table tbl = connection.getTable(TableName.valueOf(table));
+        Scan scan = new Scan();
+        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL,
+                new RegexStringComparator(reg));
+        scan.setFilter(filter);
+        ResultScanner scanner = tbl.getScanner(scan);
+        for (Result result : scanner) {
+            System.out.println(result);
+        }
+        scanner.close();
+    }
 
     public void splitRegion(String regionName, byte[] splitPoint) throws IOException {
         admin.splitRegion(Bytes.toBytes(regionName), splitPoint);
