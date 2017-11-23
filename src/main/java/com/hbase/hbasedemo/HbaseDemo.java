@@ -1,5 +1,6 @@
 package com.hbase.hbasedemo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hbase.hbasedemo.structure.LastLogonFlat;
 import com.hbase.hbasedemo.structure.WechatUser;
 import com.hbase.hbasedemo.structure.acctSummary;
@@ -48,8 +49,11 @@ public class HbaseDemo {
         helper.put("bank", bankLogonRow, "logon", qualifierValues);
 
         String bankAccountRow = logonFlat.miTime + "-" + logonFlat.custId;
-        // TODO acct dataStructure
         Map<String, Object> mapQvs = MyBeanUtils.transBean2Map(acct);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String data = objectMapper.writeValueAsString(acct.data);
+        mapQvs.put("data", data);
         helper.put("bank", bankAccountRow, "account", mapQvs);
 
         for (WechatUser wechatUser : samples) {

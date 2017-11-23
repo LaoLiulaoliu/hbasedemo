@@ -16,10 +16,9 @@ public class JsonConvert {
     public LastLogonFlat readLogonJson(String fileName) {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        //TODO delete this line
-        System.out.println(this.getClass().getClassLoader().getResource("."));
-
-        String path = this.getClass().getClassLoader().getResource(fileName).getPath();
+        String path = this.getClass().getClassLoader().getResource(fileName)
+                .getPath().replace("file:", "").replace("!", "");
+        
         lastLogon logon = null;
         LastLogonFlat logonFlat = new LastLogonFlat();
 
