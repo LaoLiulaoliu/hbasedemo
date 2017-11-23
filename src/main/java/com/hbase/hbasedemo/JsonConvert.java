@@ -16,9 +16,8 @@ public class JsonConvert {
     public LastLogonFlat readLogonJson(String fileName) {
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String path = this.getClass().getClassLoader().getResource(fileName)
-                .getPath().replace("file:", "").replace("!", "");
-        
+        String path = "/tmp/lastLogon.json";
+
         lastLogon logon = null;
         LastLogonFlat logonFlat = new LastLogonFlat();
 
@@ -43,7 +42,7 @@ public class JsonConvert {
 
     public acctSummary readSummaryJson(String fileName) {
         ObjectMapper objectMapper = new ObjectMapper();
-        String path = this.getClass().getClassLoader().getResource(fileName).getPath();
+        String path = "/tmp/acctSummary.json";
         acctSummary acct = null;
 
         try {
@@ -60,7 +59,7 @@ public class JsonConvert {
         objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
 
-        String path = this.getClass().getClassLoader().getResource(fileName).getPath();
+        String path = "/tmp/sampleLog.txt";
         List<WechatUser> wechatUsers = new ArrayList<>();
 
         try {
