@@ -141,6 +141,11 @@ public class HbaseHelper implements Closeable {
 
     public void createTable(String table, int maxVersions, byte[][] splitKeys, String... colfams)
             throws IOException {
+        TableName tableName = TableName.valueOf(table);
+        if (admin.tableExists(tableName)) {
+            System.out.println("Table: " + table + " already exists, Skip.");
+            return;
+        }
         HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(table));
         desc.setDurability(Durability.SKIP_WAL);
         for (String cf : colfams) {
@@ -209,6 +214,11 @@ public class HbaseHelper implements Closeable {
         Table tbl = connection.getTable(TableName.valueOf(table));
         Put put = new Put(Bytes.toBytes(row));
         for (Map.Entry<String, Object> entry : qualifierValues.entrySet()) {
+            Object obj = entry.getValue();
+            if (obj == null) {
+                System.out.println("value null: " + table + row + columnFamily + ":" + entry.getKey());
+                continue;
+            }
             put.addColumn(Bytes.toBytes(columnFamily),
                           Bytes.toBytes(entry.getKey()),
                           Bytes.toBytes((String)entry.getValue()));
@@ -322,7 +332,7 @@ public class HbaseHelper implements Closeable {
             Map<byte[], RegionLoad> rlMap = sl.getRegionsLoad();
             for (RegionLoad rl: rlMap.values()) {
                 String rName = rl.getNameAsString();
-                System.out.println(sn.getServerName() + " " + rName);
+                System.out.println(sn.getServerName() + " region name: " + rName);
                 if(rName.substring(0, rName.indexOf(",")).equals(regionName)) {
                     int regionSize = rl.getStorefileSizeMB();
                     totalSize += regionSize;

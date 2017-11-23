@@ -24,7 +24,6 @@ public class HbaseDemo {
         Configuration conf = HBaseConfiguration.create();
         HbaseHelper helper = HbaseHelper.getHelper(conf);
         createTable(helper);
-        helper.getRegionSize("banklogon");
 
         insertData(logonFlat, acct, samples, helper);
 
@@ -37,7 +36,7 @@ public class HbaseDemo {
 
         helper.createTable("bank", splitKeys,"logon", "account");
         helper.createTable("wechat", splitKeys,"user");
-        helper.getRegionSize("banklogon");
+        helper.getRegionSize("bank,0001,1511427314355.3f3052d62df718b412ed4b97480bd7d8.");
     }
 
     public static void insertData(LastLogonFlat logonFlat,
@@ -59,6 +58,7 @@ public class HbaseDemo {
         for (WechatUser wechatUser : samples) {
             Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
             String row = wechatUser.miTime.getTime() + wechatUser.openId;
+            qvs.put("miTime", String.valueOf(wechatUser.miTime.getTime()));
             helper.put("wechat", row, "user", qvs);
         }
     }
