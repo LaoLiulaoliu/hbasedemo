@@ -12,7 +12,10 @@ import java.util.NavigableMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
-import org.apache.hadoop.hbase.filter.*;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.RegexStringComparator;
+import org.apache.hadoop.hbase.filter.RowFilter;
 import org.apache.hadoop.hbase.io.compress.Compression.Algorithm;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.NamespaceDescriptor;
@@ -147,7 +150,7 @@ public class HbaseHelper implements Closeable {
             return;
         }
         HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(table));
-        desc.setDurability(Durability.SKIP_WAL);
+        desc.setDurability(Durability.ASYNC_WAL);
         for (String cf : colfams) {
             HColumnDescriptor coldef = new HColumnDescriptor(cf);
             coldef.setCompressionType(Algorithm.SNAPPY);
@@ -223,6 +226,7 @@ public class HbaseHelper implements Closeable {
                           Bytes.toBytes(entry.getKey()),
                           Bytes.toBytes((String)entry.getValue()));
         }
+        put.setDurability(Durability.SKIP_WAL);
         tbl.put(put);
         tbl.close();
     }
@@ -247,6 +251,7 @@ public class HbaseHelper implements Closeable {
                     v++;
                 }
             }
+            put.setDurability(Durability.SKIP_WAL);
             tbl.put(put);
         }
         tbl.close();

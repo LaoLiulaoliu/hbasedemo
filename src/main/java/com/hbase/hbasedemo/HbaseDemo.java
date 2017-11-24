@@ -27,16 +27,17 @@ public class HbaseDemo {
 
         insertData(logonFlat, acct, samples, helper);
 
-        helper.regScan("bank", "151090\\d{7}-\\w+");
+        helper.regScan("banklogon", "151090\\d{7}-\\w+");
     }
 
     public static void createTable(HbaseHelper helper) throws IOException {
         RegionSplit rSplit = new RegionSplit();
         byte[][] splitKeys = rSplit.split();
 
-        helper.createTable("bank", splitKeys,"logon", "account");
+        helper.createTable("banklogon", splitKeys,"logon");
+        helper.createTable("bankaccount", splitKeys,"account");
         helper.createTable("wechat", splitKeys,"user");
-        helper.getRegionSize("bank,0001,1511427314355.3f3052d62df718b412ed4b97480bd7d8.");
+        helper.getRegionSize("banklogon,0001,1511427314355.3f3052d62df718b412ed4b97480bd7d8.");
     }
 
     public static void insertData(LastLogonFlat logonFlat,
@@ -45,15 +46,14 @@ public class HbaseDemo {
                                   HbaseHelper helper) throws IOException {
         String bankLogonRow = logonFlat.miTime + "-" + logonFlat.custId;
         Map<String, Object> qualifierValues = MyBeanUtils.transBean2Map(logonFlat);
-        helper.put("bank", bankLogonRow, "logon", qualifierValues);
+        helper.put("banklogon", bankLogonRow, "logon", qualifierValues);
 
-        String bankAccountRow = logonFlat.miTime + "-" + logonFlat.custId;
+        String bankAccountRow = logonFlat.custId + "-" + logonFlat.miTime;
         Map<String, Object> mapQvs = MyBeanUtils.transBean2Map(acct);
-
         ObjectMapper objectMapper = new ObjectMapper();
         String data = objectMapper.writeValueAsString(acct.data);
         mapQvs.put("data", data);
-        helper.put("bank", bankAccountRow, "account", mapQvs);
+        helper.put("bankaccount", bankAccountRow, "account", mapQvs);
 
         for (WechatUser wechatUser : samples) {
             Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
