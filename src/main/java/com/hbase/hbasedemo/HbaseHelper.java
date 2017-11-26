@@ -150,7 +150,7 @@ public class HbaseHelper implements Closeable {
             return;
         }
         HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(table));
-        desc.setDurability(Durability.ASYNC_WAL);
+        desc.setDurability(Durability.SKIP_WAL);
         for (String cf : colfams) {
             HColumnDescriptor coldef = new HColumnDescriptor(cf);
             coldef.setCompressionType(Algorithm.SNAPPY);
@@ -226,7 +226,7 @@ public class HbaseHelper implements Closeable {
                           Bytes.toBytes(entry.getKey()),
                           Bytes.toBytes((String)entry.getValue()));
         }
-        put.setDurability(Durability.SKIP_WAL);
+        put.setDurability(Durability.ASYNC_WAL);
         tbl.put(put);
         tbl.close();
     }

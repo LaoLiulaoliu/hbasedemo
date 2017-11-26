@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hbase.hbasedemo.structure.LastLogonFlat;
 import com.hbase.hbasedemo.structure.WechatUser;
 import com.hbase.hbasedemo.structure.acctSummary;
-
+import org.apache.commons.cli.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 
@@ -16,6 +16,25 @@ public class HbaseDemo {
     //public final static Logger logger = LoggerFactory.getLogger(HbaseDemo.class);
 
     public static void main(String[] args) throws IOException {
+        Options options = new Options( );
+        CommandLineParser parser = new DefaultParser();
+        CommandLine commandLine = null;
+        options.addOption("h", "hivetable", false,
+                "create hive external table");
+
+        try {
+            commandLine = parser.parse(options, args);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if ( commandLine.hasOption('h') ) {
+            HiveTable hiveTable = new HiveTable();
+            hiveTable.init();
+            hiveTable.createTable();
+            hiveTable.close();
+            System.exit(0);
+        }
+
         JsonConvert jc = new JsonConvert();
         LastLogonFlat logonFlat = jc.readLogonJson("lastLogon.json");
         acctSummary acct = jc.readSummaryJson("acctSummary.json");
