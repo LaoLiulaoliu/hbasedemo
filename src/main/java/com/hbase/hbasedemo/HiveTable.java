@@ -1,5 +1,6 @@
 package com.hbase.hbasedemo;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,8 +13,8 @@ public class HiveTable {
 
     private static String Driver ="org.apache.hive.jdbc.HiveDriver";
     private static String url = "jdbc:hive2://127.0.0.1:10000/default";
-    private static String name = "root";
-    private static String password = "root";
+    private static String name = "";
+    private static String password = "";
     private Connection connection;
 
     private String banklogon = "CREATE EXTERNAL TABLE IF NOT EXISTS banklogon(key string, msgType string, miTime string, channel string, custId string, event string, camlevel string, custType string, custSeg string, guid string, dateOfBirth string, jobTitlFull string, ctryCde string, line3 string, line2 string, line1 string) "
@@ -107,15 +108,28 @@ public class HiveTable {
         return sb.toString();
     }
 
-    public Object handler(Class clazz, ResultSet rs) {
+    public Object handler(Class clazz, ResultSet rs) throws Exception {
+        Object bean = clazz.newInstance();
         try {
-            Object bean = clazz.newInstance();
             ResultSetMetaData meta = rs.getMetaData();
             int count = meta.getColumnCount();
             for (int i = 0; i < count; i++) {
                 String columnName = meta.getColumnName(i + 1);
+                Object value = rs.getObject(columnName);
                 String name = columnName;
-
+                if (columnName.contains(".")) {
+                    String[] split = columnName.split("\\.");
+                    if (split.length != 2) {
+                        throw  new Exception("incorrect table name！");
+                    }
+                    name = split[1];
+                }
+                name = underlineToCamel(name.toLowerCase());
+                Field f = bean.getClass().getDeclaredField(name);
+                if (f != null) {
+                    f.setAccessible(true);
+                    f.set(bean, value);
+                }
             }
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -124,7 +138,7 @@ public class HiveTable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return bean;
     }
 
     public void close() {
