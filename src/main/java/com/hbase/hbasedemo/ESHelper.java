@@ -1,5 +1,6 @@
 package com.hbase.hbasedemo;
 
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -31,8 +32,6 @@ public class ESHelper {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void defineMapping() {
@@ -58,6 +57,17 @@ public class ESHelper {
                         "    \"cardType\": {\"type\": \"string\"}\n" +
                         "  }\n}", XContentType.JSON)
                 .get();
+    }
+
+    public void bulkInsert() {
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        int index = 1;
+        HiveTable hiveTable = new HiveTable();
+        hiveTable.init();
+        hiveTable.getWechat();
+
+        client.prepareIndex("wechat", "user", String.valueOf(index)).setSource();
+        index++;
     }
 
     public void close() {

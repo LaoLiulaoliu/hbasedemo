@@ -31,6 +31,7 @@ public class HbaseDemo {
             HiveTable hiveTable = new HiveTable();
             hiveTable.init();
             hiveTable.createTable();
+            hiveTable.getWechat();
             hiveTable.close();
             System.exit(0);
         }

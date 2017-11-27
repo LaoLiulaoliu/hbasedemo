@@ -67,20 +67,18 @@ public class JsonConvert {
                     new FileInputStream(new File(path)), "UTF-8"));
             String line = null;
             while ((line = input.readLine()) != null) {
-                line = line.replaceAll("\\\\", "");
-                line = line.replaceAll("\"\\{", "{");
-                line = line.replaceAll("\\}\"", "}");
-                sampleLog sample = objectMapper.readValue(line, sampleLog.class);
+                //line = line.replaceAll("\\\\", "");
+                //line = line.replaceAll("\"\\{", "{");
+                //line = line.replaceAll("\\}\"", "}");
+                //sampleLog sample = objectMapper.readValue(line, sampleLog.class);
 
-                WechatUser wechatUser = new WechatUser();
-                BeanUtils.copyProperties(wechatUser, sample);
-                BeanUtils.copyProperties(wechatUser, sample.data);
+                WechatUser wechatUser = objectMapper.readValue(line, WechatUser.class);
+                //BeanUtils.copyProperties(wechatUser, sample);
+                //BeanUtils.copyProperties(wechatUser, sample.data);
 
                 wechatUsers.add(wechatUser);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
