@@ -78,6 +78,9 @@ public class HbaseDemo {
         for (WechatUser wechatUser : samples) {
             Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
             String row = wechatUser.miTime.getTime() + '-' + wechatUser.openId;
+            System.out.println(wechatUser.miTime.getTime());
+            System.out.println(wechatUser.openId);
+            System.out.println(row);
             qvs.put("miTime", String.valueOf(wechatUser.miTime.getTime()));
             helper.put("wechat", row, "user", qvs);
         }

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.Map;
 
 public class HiveTable {
     public static final char UNDERLINE = '_';
@@ -60,21 +61,18 @@ public class HiveTable {
         ResultSet rs;
         try {
             Statement stmt = connection.createStatement();
-            rs = stmt.executeQuery("select count(*) from wechat");
-            while (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
             rs = stmt.executeQuery("select a.msgType, a.miTime, a.channel, " +
                     "a.openId, a.event, a.userName, a.idType, a.idNum, " +
                     "a.cardType, a.cardNum, a.mobileNum, a.reasonCode " +
                     "from wechat a");
-            //handler(WechatUser.class, rs);
             while (rs.next()) {
-                System.out.println(rs.getString("reasonCode"));
-                System.out.println(rs.getString(1));
-                System.out.println(rs.getString(2));
-
-
+                try {
+                    WechatUser wechatUser = (WechatUser) handler(WechatUser.class, rs);
+                    Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
+                    System.out.println(qvs.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
