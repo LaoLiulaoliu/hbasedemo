@@ -1,5 +1,7 @@
 package com.hbase.hbasedemo;
 
+import com.hbase.hbasedemo.structure.WechatUser;
+
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,17 +22,17 @@ public class HiveTable {
     private String banklogon = "CREATE EXTERNAL TABLE IF NOT EXISTS banklogon(key string, msgType string, miTime string, channel string, custId string, event string, camlevel string, custType string, custSeg string, guid string, dateOfBirth string, jobTitlFull string, ctryCde string, line3 string, line2 string, line1 string) "
             + "STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' "
             + "WITH SERDEPROPERTIES (\"hbase.columns.mapping\" = \":key,logon:msgType,logon:miTime,logon:channel,logon:custId,logon:event,logon:camlevel,logon:custType,logon:custSeg,logon:guid,logon:dateOfBirth,logon:jobTitlFull,logon:ctryCde,logon:line3,logon:line2,logon:line1\") "
-            + "TBLPROPERTIES (\"hbase.table.name\" = \"banklogon\", \"hbase.mapred.output.outputtable\" = \"banklogon\");";
+            + "TBLPROPERTIES (\"hbase.table.name\" = \"banklogon\", \"hbase.mapred.output.outputtable\" = \"banklogon\")";
 
     private String bankaccount = "CREATE EXTERNAL TABLE IF NOT EXISTS bankaccount(key string, msgType string, miTime string, channel string, custId string, event string, data string) "
             + "STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' "
             + "WITH SERDEPROPERTIES (\"hbase.columns.mapping\" = \":key,account:msgType,account:miTime,account:channel,account:custId,account:event,account:data\") "
-            + "TBLPROPERTIES (\"hbase.table.name\" = \"bankaccount\", \"hbase.mapred.output.outputtable\" = \"bankaccount\");";
+            + "TBLPROPERTIES (\"hbase.table.name\" = \"bankaccount\", \"hbase.mapred.output.outputtable\" = \"bankaccount\")";
 
     private String wechatUser = "CREATE EXTERNAL TABLE IF NOT EXISTS wechat(key string, msgType string, miTime string, channel string, openId string, event string, userName string, idType string, idNum string, cardType string, cardNum string, mobileNum string, reasonCode string) "
             + "STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' "
             + "WITH SERDEPROPERTIES (\"hbase.columns.mapping\" = \":key,user:msgType,user:miTime,user:channel,user:openId,user:event,user:userName,user:idType,user:idNum,user:cardType,user:cardNum,user:mobileNum,user:resonCode\") "
-            + "TBLPROPERTIES (\"hbase.table.name\" = \"wechat\", \"hbase.mapred.output.outputtable\" = \"wechat\");";
+            + "TBLPROPERTIES (\"hbase.table.name\" = \"wechat\", \"hbase.mapred.output.outputtable\" = \"wechat\")";
 
     public void init() {
         try {
@@ -46,18 +48,9 @@ public class HiveTable {
     public void createTable() {
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(banklogon);
-            while (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
-            rs = stmt.executeQuery(bankaccount);
-            while (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
-            rs = stmt.executeQuery(wechatUser);
-            while (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
+            stmt.execute(banklogon);
+            stmt.execute(bankaccount);
+            stmt.execute(wechatUser);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,15 +60,15 @@ public class HiveTable {
         ResultSet rs;
         try {
             Statement stmt = connection.createStatement();
-            rs = stmt.executeQuery("select count(*) from wechat;");
+            rs = stmt.executeQuery("select count(*) from wechat");
             while (rs.next()) {
                 System.out.println(rs.getString(1));
-                System.out.println(rs.getString(2));
             }
             rs = stmt.executeQuery("select a.msgType, a.miTime, a.channel, " +
                     "a.openId, a.event, a.userName, a.idType, a.idNum, " +
                     "a.cardType, a.cardNum, a.mobileNum, a.reasonCode " +
-                    "from wechat a;");
+                    "from wechat a");
+            //handler(WechatUser.class, rs);
             while (rs.next()) {
                 System.out.println(rs.getString("reasonCode"));
                 System.out.println(rs.getString(1));
