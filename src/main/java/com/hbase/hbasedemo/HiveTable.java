@@ -20,6 +20,10 @@ public class HiveTable {
     private static String password = "";
     private Connection connection;
 
+    private String[] wechatFields = {"msgType", "miTime", "channel", "openId",
+            "event", "userName", "idType", "idNum", "cardType", "cardNum",
+            "mobileNum", "reasonCode"};
+
     private String banklogon = "CREATE EXTERNAL TABLE IF NOT EXISTS banklogon(key string, msgType string, miTime string, channel string, custId string, event string, camlevel string, custType string, custSeg string, guid string, dateOfBirth string, jobTitlFull string, ctryCde string, line3 string, line2 string, line1 string) "
             + "STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' "
             + "WITH SERDEPROPERTIES (\"hbase.columns.mapping\" = \":key,logon:msgType,logon:miTime,logon:channel,logon:custId,logon:event,logon:camlevel,logon:custType,logon:custSeg,logon:guid,logon:dateOfBirth,logon:jobTitlFull,logon:ctryCde,logon:line3,logon:line2,logon:line1\") "
@@ -32,7 +36,7 @@ public class HiveTable {
 
     private String wechatUser = "CREATE EXTERNAL TABLE IF NOT EXISTS wechat(key string, msgType string, miTime string, channel string, openId string, event string, userName string, idType string, idNum string, cardType string, cardNum string, mobileNum string, reasonCode string) "
             + "STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler' "
-            + "WITH SERDEPROPERTIES (\"hbase.columns.mapping\" = \":key,user:msgType,user:miTime,user:channel,user:openId,user:event,user:userName,user:idType,user:idNum,user:cardType,user:cardNum,user:mobileNum,user:resonCode\") "
+            + "WITH SERDEPROPERTIES (\"hbase.columns.mapping\" = \":key,user:msgType,user:miTime,user:channel,user:openId,user:event,user:userName,user:idType,user:idNum,user:cardType,user:cardNum,user:mobileNum,user:reasonCode\") "
             + "TBLPROPERTIES (\"hbase.table.name\" = \"wechat\", \"hbase.mapred.output.outputtable\" = \"wechat\")";
 
     public void init() {
@@ -67,6 +71,7 @@ public class HiveTable {
                     "from wechat a");
             while (rs.next()) {
                 try {
+
                     WechatUser wechatUser = (WechatUser) handler(WechatUser.class, rs);
                     Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
                     System.out.println(qvs.toString());
@@ -105,9 +110,10 @@ public class HiveTable {
             ResultSetMetaData meta = rs.getMetaData();
             int count = meta.getColumnCount();
             for (int i = 0; i < count; i++) {
+                //columnName: a.cardtype
+                String name = null;
                 String columnName = meta.getColumnName(i + 1);
                 Object value = rs.getObject(columnName);
-                String name = columnName;
                 if (columnName.contains(".")) {
                     String[] split = columnName.split("\\.");
                     if (split.length != 2) {
@@ -115,7 +121,14 @@ public class HiveTable {
                     }
                     name = split[1];
                 }
-                name = underlineToCamel(name.toLowerCase());
+
+                for (String field : wechatFields) {
+                    if (field.toLowerCase().equals(name.toLowerCase())) {
+                        name = field;
+                        break;
+                    }
+                }
+                System.out.println(columnName + " " + name + " " + value);
                 Field f = bean.getClass().getDeclaredField(name);
                 if (f != null) {
                     f.setAccessible(true);

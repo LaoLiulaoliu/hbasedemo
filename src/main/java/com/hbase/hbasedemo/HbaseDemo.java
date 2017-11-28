@@ -16,7 +16,8 @@ public class HbaseDemo {
     //public final static Logger logger = LoggerFactory.getLogger(HbaseDemo.class);
 
     public static void main(String[] args) throws IOException {
-        Options options = new Options( );
+
+        Options options = new Options();
         CommandLineParser parser = new DefaultParser();
         CommandLine commandLine = null;
         options.addOption("h", "hivetable", false,
@@ -57,7 +58,7 @@ public class HbaseDemo {
         helper.createTable("banklogon", splitKeys,"logon");
         helper.createTable("bankaccount", splitKeys,"account");
         helper.createTable("wechat", splitKeys,"user");
-        helper.getRegionSize("banklogon,0001,1511427314355.3f3052d62df718b412ed4b97480bd7d8.");
+        helper.getRegionSize("bankaccount,0001,1511852225055.ac5439f2fd42c6fc46cf0b110b19e971.");
     }
 
     public static void insertData(LastLogonFlat logonFlat,
@@ -77,11 +78,8 @@ public class HbaseDemo {
 
         for (WechatUser wechatUser : samples) {
             Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
-            String row = wechatUser.miTime.getTime() + '-' + wechatUser.openId;
-            System.out.println(wechatUser.miTime.getTime());
-            System.out.println(wechatUser.openId);
-            System.out.println(row);
-            qvs.put("miTime", String.valueOf(wechatUser.miTime.getTime()));
+            String row = wechatUser.miTime + "-" + wechatUser.openId;
+            qvs.put("miTime", String.valueOf(wechatUser.miTime));
             helper.put("wechat", row, "user", qvs);
         }
     }

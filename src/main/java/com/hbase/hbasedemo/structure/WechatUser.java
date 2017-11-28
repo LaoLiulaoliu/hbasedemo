@@ -1,13 +1,10 @@
 package com.hbase.hbasedemo.structure;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.util.Date;
+import java.util.regex.Pattern;
 
 public class WechatUser {
     public String msgType;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    public Date miTime;
+    public String miTime;
     public String channel;
     public String openId;
     public String event;
@@ -28,14 +25,27 @@ public class WechatUser {
         this.msgType = msgType;
     }
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
-    public Date getMiTime() {
+    public String getMiTime() {
         return miTime;
     }
 
-    public void setMiTime(Date miTime) {
+    public void setMiTime(String miTime) {
         this.miTime = miTime;
     }
+
+//    public void setMiTime(String miTime) {
+//        boolean ret = isInteger(miTime);
+//        if (ret) {
+//            this.miTime = new Date(Long.valueOf(miTime));
+//        } else {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            try {
+//                this.miTime = sdf.parse(miTime);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
     public String getChannel() {
         return channel;
@@ -133,5 +143,14 @@ public class WechatUser {
                 ", mobileNum='" + mobileNum + '\'' +
                 ", reasonCode='" + reasonCode + '\'' +
                 '}';
+    }
+
+    /* 判断是否为整数
+      * @param str 传入的字符串
+      * @return 是整数返回true,否则返回false
+     */
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 }

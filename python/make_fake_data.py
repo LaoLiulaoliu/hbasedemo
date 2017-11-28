@@ -7,6 +7,7 @@ from __future__ import print_function, division
 import json
 import random
 import sys
+import time
 
 def make_fake_data(path=None):
     data = None
@@ -20,6 +21,8 @@ def make_fake_data(path=None):
 
     codes = ['008', '007', '006', '005']
     number = '0123456789'
+    timestamp = time.mktime( time.strptime(data['miTime'], "%Y-%m-%d %H:%M:%S") )
+    data['miTime'] = str(int(timestamp)) + '000'
     with open('/tmp/sampleLog.txt', 'w') as fdw:
         for i in range(1000):
             data['reasonCode'] = random.choice(codes)
