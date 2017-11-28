@@ -1,34 +1,38 @@
 package com.hbase.hbasedemo;
 
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
+import java.util.Map;
 
 public class ESHelper {
 
-    private String hostName = "hostname";
+    private String hostName = "ec2-13-59-255-67.us-east-2.compute.amazonaws.com";
     private TransportClient client;
 
     public void init() {
         try {
             Settings settings = Settings.builder()
-                    .put("cluster.name", "onesearch")
-                    .put("client.transport.sniff", true)
-                    .put("discovery.type", "zen")
-                    .put("discovery.zen.minimum_master_nodes", 1)
-                    .put("discovery.zen.ping_timeout", "500ms")
-                    .put("discovery.initial_state_timeout", "500ms")
+                    //.put("client.transport.sniff", true)
+                    //.put("discovery.type", "zen")
+                    //.put("discovery.zen.minimum_master_nodes", 1)
+                    //.put("discovery.zen.ping_timeout", "500ms")
+                    //.put("discovery.initial_state_timeout", "500ms")
+                    .put("transport.type","netty3")
+                    .put("http.type", "netty3")
                     .build();
 
             client = new PreBuiltTransportClient(settings)
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(hostName), 9300));
+                    .addTransportAddress(new TransportAddress(InetAddress.getByName(hostName), 9300));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -59,15 +63,26 @@ public class ESHelper {
                 .get();
     }
 
-    public void bulkInsert() {
+    public void bulkInsert(List<Map<String, Object>> wechatData) {
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        int index = 1;
-        HiveTable hiveTable = new HiveTable();
-        hiveTable.init();
-        hiveTable.getWechat();
-
-        client.prepareIndex("wechat", "user", String.valueOf(index)).setSource();
-        index++;
+        for (int index = 0; index < wechatData.size(); index++) {
+            bulkRequest.add(client.prepareIndex("wechat",
+                    "user",
+                    String.valueOf(index))
+                    .setSource(wechatData.indexOf(index)));
+            if (index % 500 == 499) {
+                BulkResponse bulkResponse = bulkRequest.get();
+                if (bulkResponse.hasFailures()) {
+                    System.out.println(index + " : in insert to es failed.");
+                }
+            }
+        }
+        if (wechatData.size() % 500 != 499) {
+            BulkResponse bulkResponse = bulkRequest.get();
+            if (bulkResponse.hasFailures()) {
+                System.out.println("last insert to es failed.");
+            }
+        }
     }
 
     public void close() {

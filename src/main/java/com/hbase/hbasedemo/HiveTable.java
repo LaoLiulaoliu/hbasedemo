@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class HiveTable {
@@ -61,7 +63,8 @@ public class HiveTable {
         }
     }
 
-    public void getWechat() {
+    public List<Map<String, Object>> getWechat() {
+        List<Map<String, Object>> wechatData = new ArrayList<>();
         ResultSet rs;
         try {
             Statement stmt = connection.createStatement();
@@ -74,7 +77,7 @@ public class HiveTable {
 
                     WechatUser wechatUser = (WechatUser) handler(WechatUser.class, rs);
                     Map<String, Object> qvs = MyBeanUtils.transBean2Map(wechatUser);
-                    System.out.println(qvs.toString());
+                    wechatData.add(qvs);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -82,7 +85,7 @@ public class HiveTable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        return wechatData;
     }
 
     private String underlineToCamel(String param) {
@@ -128,7 +131,6 @@ public class HiveTable {
                         break;
                     }
                 }
-                System.out.println(columnName + " " + name + " " + value);
                 Field f = bean.getClass().getDeclaredField(name);
                 if (f != null) {
                     f.setAccessible(true);

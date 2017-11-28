@@ -20,20 +20,32 @@ public class HbaseDemo {
         Options options = new Options();
         CommandLineParser parser = new DefaultParser();
         CommandLine commandLine = null;
-        options.addOption("h", "hivetable", false,
+        options.addOption("c", "createtable", false,
                 "create hive external table");
+        options.addOption("s", "setes", false,
+                "set data to es");
 
         try {
             commandLine = parser.parse(options, args);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if ( commandLine.hasOption('h') ) {
+        if ( commandLine.hasOption('c') ) {
             HiveTable hiveTable = new HiveTable();
             hiveTable.init();
             hiveTable.createTable();
             hiveTable.getWechat();
             hiveTable.close();
+            System.exit(0);
+        } else if (commandLine.hasOption('s')) {
+            HiveTable hiveTable = new HiveTable();
+            hiveTable.init();
+            List<Map<String, Object>> wechatData = hiveTable.getWechat();
+
+            ESHelper esHelper = new ESHelper();
+            esHelper.init();
+            esHelper.defineMapping();
+            esHelper.bulkInsert(wechatData);
             System.exit(0);
         }
 
