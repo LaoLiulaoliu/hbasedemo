@@ -23,7 +23,6 @@ def make_fake_data(path=None):
     with open('/tmp/sampleLog.txt', 'w') as fdw:
         for i in range(1000):
             data['reasonCode'] = random.choice(codes)
-            print(random.sample(number, 9))
             data['openId'] = 'HSBC' + ''.join(random.sample(number, 9))
             fdw.write(json.dumps(data)+'\n')
 
