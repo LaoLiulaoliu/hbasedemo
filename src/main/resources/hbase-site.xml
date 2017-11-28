@@ -29,12 +29,12 @@
 
   <property>
     <name>hbase.zookeeper.quorum</name>
-    <value>ip-172-31-100-10.us-east-2.compute.internal</value>
+    <value>ip-172-31-37-169.us-east-2.compute.internal</value>
   </property>
 
   <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://ip-172-31-100-10.us-east-2.compute.internal:8020/user/hbase</value>
+    <value>hdfs://ip-172-31-37-169.us-east-2.compute.internal:8020/user/hbase</value>
   </property>
 
   <property>
