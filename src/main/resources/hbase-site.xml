@@ -2,7 +2,6 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
 /**
- * Copyright 2010 The Apache Software Foundation
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -22,31 +21,4 @@
  */
 -->
 <configuration>
-  <property>
-    <name>hbase.cluster.distributed</name>
-    <value>true</value>
-  </property>
-
-  <property>
-    <name>hbase.zookeeper.quorum</name>
-    <value>ip-172-31-47-148.us-east-2.compute.internal</value>
-  </property>
-
-  <property>
-    <name>hbase.rootdir</name>
-    <value>hdfs://ip-172-31-47-148.us-east-2.compute.internal:8020/user/hbase</value>
-  </property>
-
-  <property>
-    <name>dfs.support.append</name>
-    <value>true</value>
-  </property>
-
-  <property>
-    <name>hbase.rest.port</name>
-    <value>8070</value>
-  </property>
-
-  
-
-  </configuration>
+</configuration>
