@@ -24,7 +24,8 @@ public class HbaseDemo {
                 "create hive external table");
         options.addOption("s", "setes", false,
                 "set data to es");
-
+        options.addOption("r", "esrest", false,
+                "set data to es in restful");
         try {
             commandLine = parser.parse(options, args);
         } catch (ParseException e) {
@@ -46,6 +47,15 @@ public class HbaseDemo {
             esHelper.init();
             esHelper.defineMapping();
             esHelper.bulkInsert(wechatData);
+            System.exit(0);
+        } else if (commandLine.hasOption('r')) {
+            HiveTable hiveTable = new HiveTable();
+            hiveTable.init();
+            List<Map<String, Object>> wechatData = hiveTable.getWechat();
+
+            ESRest esRest = new ESRest();
+            esRest.init();
+            esRest.bulkCreateDoc(wechatData);
             System.exit(0);
         }
 

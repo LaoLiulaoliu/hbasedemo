@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ESHelper {
 
-    private String hostName = "ec2-13-59-255-67.us-east-2.compute.amazonaws.com";
+    private String hostName = "18.216.157.20";
     private TransportClient client;
 
     public void init() {
@@ -46,19 +46,19 @@ public class ESHelper {
                         .put("index.number_of_replicas", 1))
                 .addMapping("user", "{\n" +
                         "  \"properties\": {\n" +
-                        "    \"msgType\": {\"type\": \"string\"}\n" +
-                        "    \"miTime\": {\"type\": \"string\"}\n" +
-                        "    \"channel\": {\"type\": \"string\"}\n" +
-                        "    \"openId\": {\"type\": \"string\"}\n" +
-                        "    \"event\": {\"type\": \"string\"}\n" +
-                        "    \"userName\": {\"type\": \"string\"}\n" +
-                        "    \"idType\": {\"type\": \"string\"}\n" +
-                        "    \"idNum\": {\"type\": \"string\"}\n" +
-                        "    \"cardType\": {\"type\": \"string\"}\n" +
-                        "    \"cardNum\": {\"type\": \"string\"}\n" +
-                        "    \"mobileNum\": {\"type\": \"string\"}\n" +
-                        "    \"reasonCode\": {\"type\": \"string\"}\n" +
-                        "    \"cardType\": {\"type\": \"string\"}\n" +
+                        "    \"msgType\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"miTime\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"channel\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"openId\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"event\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"userName\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"idType\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"idNum\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"cardType\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"cardNum\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"mobileNum\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"reasonCode\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
+                        "    \"cardType\": {\"type\": \"string\", \"index\": \"not_analyzed\"}\n" +
                         "  }\n}", XContentType.JSON)
                 .get();
     }
@@ -69,7 +69,7 @@ public class ESHelper {
             bulkRequest.add(client.prepareIndex("wechat",
                     "user",
                     String.valueOf(index))
-                    .setSource(wechatData.indexOf(index)));
+                    .setSource(wechatData.get(index)));
             if (index % 500 == 499) {
                 BulkResponse bulkResponse = bulkRequest.get();
                 if (bulkResponse.hasFailures()) {
